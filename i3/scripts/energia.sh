@@ -1,41 +1,42 @@
-#!/usr/bin/bash
-file=/tmp/powerprofile
+#!/bin/bash
+STATE_FILE=/tmp/powerprofile
+ICON_ECO="  Eco"
+ICON_BALANCED="  Blc"
+ICON_PERFORMANCE="  Pro"
 
-if ! test -f $file; then
-    echo 0 >$file
-    powerprofilesctl set power-saver
+# Initialize state file if it doesn't exist
+if ! [[ -f $STATE_FILE ]]; then
+    echo 2 > $STATE_FILE
+    powerprofilesctl set performance
 fi
 
-a=$(cat $file)
+# Read the current profile state
+CURRENT_PROFILE=$(cat $STATE_FILE)
 
-if [ $BLOCK_BUTTON == 1 ]; then
-    if [ $a == 0 ]; then
-        echo 1 >$file
-        echo "  Blc"
-        powerprofilesctl set balanced
-    fi
-
-    if [ $a == 1 ]; then
-        echo 2 >$file
-        echo "  Pro"
-        powerprofilesctl set performance
-    fi
-
-    if [ $a == 2 ]; then
-        echo 0 >$file
-        echo "  Eco"
-        powerprofilesctl set power-saver
-    fi
-fi
-
-if [ $a == 1 ]; then
-    echo "  Blc"
-fi
-
-if [ $a == 0 ]; then
-    echo "  Eco"
-fi
-
-if [ $a == 2 ]; then
-    echo "  Pro"
+# Rotate power profiles if clicked
+if [[ $BLOCK_BUTTON == 1 ]]; then
+    case $CURRENT_PROFILE in
+        0)
+            echo 1 > $STATE_FILE
+            echo "$ICON_BALANCED"
+            powerprofilesctl set balanced
+            ;;
+        1)
+            echo 2 > $STATE_FILE
+            echo "$ICON_PERFORMANCE"
+            powerprofilesctl set performance
+            ;;
+        2)
+            echo 0 > $STATE_FILE
+            echo "$ICON_ECO"
+            powerprofilesctl set power-saver
+            ;;
+    esac
+else
+    # Display the current profile icon
+    case $CURRENT_PROFILE in
+        0) echo "$ICON_ECO" ;;
+        1) echo "$ICON_BALANCED" ;;
+        2) echo "$ICON_PERFORMANCE" ;;
+    esac
 fi

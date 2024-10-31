@@ -1,70 +1,72 @@
-#!/usr/bin/bash
-#creazione meccanismo di cambiamento timer modalità m (modifica)
-path=/tmp/miotimer
+#!/bin/bash
+# Create a mechanism to change timer mode (modifica)
+PATH_TO_TIMER="/tmp/miotimer"
 
-modifica() {
-	if [ $BLOCK_BUTTON == 4 ]; then
-		current=$((current + 1))
-		echo $mode >$path
-		echo $current >>$path
-	fi
-	if [ $BLOCK_BUTTON == 5 ] && [ $current != 0 ]; then
-		current=$((current - 1))
-		echo $mode >$path
-		echo $current >>$path
-	fi
-	if [ $current == 0 ]; then
-		echo "󰔛 Tmr"
-	else
-		echo " $(sed '2!d' $path) m"
-		echo ""
-		echo "#f9e2af"
-	fi
+modify() {
+    if [ "$BLOCK_BUTTON" == 4 ]; then
+        CURRENT=$((CURRENT + 1))
+        echo "$MODE" > "$PATH_TO_TIMER"
+        echo "$CURRENT" >> "$PATH_TO_TIMER"
+    fi
+
+    if [ "$BLOCK_BUTTON" == 5 ] && [ "$CURRENT" != 0 ]; then
+        CURRENT=$((CURRENT - 1))
+        echo "$MODE" > "$PATH_TO_TIMER"
+        echo "$CURRENT" >> "$PATH_TO_TIMER"
+    fi
+
+    if [ "$CURRENT" == 0 ]; then
+        echo "󰔛 Tmr"
+    else
+        echo " $(sed '2!d' "$PATH_TO_TIMER") m"
+        echo ""
+        echo "#f9e2af"
+    fi
 }
 
 timer() {
-	start=$(sed '2!d' $path)
-	start=$((start * 60))
-	now=$(date +%s)
-	first=$(sed '3!d' $path)
-	manca=$((start - now + first))
-	if [ $manca != 0 ]; then
-		echo "󰄉 $((manca / 60)):$((manca % 60))"
-		echo ""
-		echo "#a6e3a1"
+    START=$(sed '2!d' "$PATH_TO_TIMER")
+    START=$((START * 60))
+    NOW=$(date +%s)
+    FIRST=$(sed '3!d' "$PATH_TO_TIMER")
+    REMAINING=$((START - NOW + FIRST))
 
-	else
-		echo "󰔛 Tmr"
-		notify-send "Timer is over"
-		rm $path
-	fi
+    if [ "$REMAINING" != 0 ]; then
+        echo "󰄉 $((REMAINING / 60)):$((REMAINING % 60))"
+        echo ""
+        echo "#a6e3a1"
+    else
+        echo "󰔛 Tmr"
+        notify-send "Timer is over"
+        rm "$PATH_TO_TIMER"
+    fi
 }
 
-if [ -f $path ]; then
-	mode=$(sed '1!d' $path)
-	current=$(sed '2!d' $path)
+if [ -f "$PATH_TO_TIMER" ]; then
+    MODE=$(sed '1!d' "$PATH_TO_TIMER")
+    CURRENT=$(sed '2!d' "$PATH_TO_TIMER")
 
-	if [ $BLOCK_BUTTON == 1 ] && [ $current != 0 ]; then
-		if [ $mode == "w" ]; then
-			rm $path
-			echo "󰔛 Tmr"
-			exit
-		fi
-		mode=w
-		echo $mode >$path
-		echo $current >>$path
-		echo $(date +%s) >>$path
-	fi
+    if [ "$BLOCK_BUTTON" == 1 ] && [ "$CURRENT" != 0 ]; then
+        if [ "$MODE" == "w" ]; then
+            rm "$PATH_TO_TIMER"
+            echo "󰔛 Tmr"
+            exit
+        fi
+        MODE="w"
+        echo "$MODE" > "$PATH_TO_TIMER"
+        echo "$CURRENT" >> "$PATH_TO_TIMER"
+        echo "$(date +%s)" >> "$PATH_TO_TIMER"
+    fi
 
-	if [ $mode == "m" ]; then
-		modifica
-	fi
+    if [ "$MODE" == "m" ]; then
+        modify
+    fi
 
-	if [ $mode == "w" ]; then
-		timer
-	fi
+    if [ "$MODE" == "w" ]; then
+        timer
+    fi
 else
-	echo m >$path
-	echo 0 >>$path
-	echo "󰔛 Tmr"
+    echo "m" > "$PATH_TO_TIMER"
+    echo "0" >> "$PATH_TO_TIMER"
+    echo "󰔛 Tmr"
 fi

@@ -1,31 +1,28 @@
-#!/usr/bin/bash
-a=1
-path=~/.config/i3/scripts/ora.sh
+#!/bin/bash
+DISPLAY_MODE=1
+SCRIPT_PATH="$HOME/.config/i3/scripts/ora.sh"
 
-cambia_var() {
-	if [ $a == 0 ]; then
-		sed -i '2d' $path
-		sed -i '2ia=1' $path
-		# se non mostri la variabile subito ci sarà il delay di interval
-		a=1
-		return 1
-	fi
-	if [ $a == 1 ]; then
-		sed -i '2d' $path
-		sed -i '2ia=0' $path
-		a=0
-		return 0
-	fi
+# Toggle the value of DISPLAY_MODE and update the script file
+toggle_display_mode() {
+    if [ "$DISPLAY_MODE" -eq 0 ]; then
+        sed -i '2d' "$SCRIPT_PATH"
+        sed -i '2iDISPLAY_MODE=1' "$SCRIPT_PATH"
+        DISPLAY_MODE=1
+    else
+        sed -i '2d' "$SCRIPT_PATH"
+        sed -i '2iDISPLAY_MODE=0' "$SCRIPT_PATH"
+        DISPLAY_MODE=0
+    fi
 }
 
-if [ $BLOCK_BUTTON == 1 ]; then
-	cambia_var
+# Toggle on mouse click (BLOCK_BUTTON 1)
+if [ "$BLOCK_BUTTON" -eq 1 ]; then
+    toggle_display_mode
 fi
 
-if [ $a == 0 ]; then
-	date '+%a %d %b %H:%M'
-fi
-
-if [ $a == 1 ]; then
-	date '+%H:%M'
+# Display date based on DISPLAY_MODE's value
+if [ "$DISPLAY_MODE" -eq 0 ]; then
+    date '+%a %d %b %H:%M'
+else
+    date '+%H:%M'
 fi

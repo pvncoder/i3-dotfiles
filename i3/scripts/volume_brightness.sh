@@ -1,12 +1,12 @@
 #!/bin/bash
-# original source: https://gitlab.com/Nmoleo/i3-volume-brightness-indicator
-# taken from here: https://gitlab.com/Nmoleo/i3-volume-brightness-indicator
+# Original source: https://gitlab.com/Nmoleo/i3-volume-brightness-indicator
+# Taken from here: https://gitlab.com/Nmoleo/i3-volume-brightness-indicator
 
 # See README.md for usage instructions
-bar_color="#a6da95"
-volume_step=5
-brightness_step=5%
-max_volume=100
+BAR_COLOR="#a6da95"
+VOLUME_STEP=5
+BRIGHTNESS_STEP=5%
+MAX_VOLUME=100
 
 # Uses regex to get volume from pactl
 function get_volume {
@@ -21,77 +21,77 @@ function get_mute {
 # Uses regex to get brightness from xbacklight
 function get_brightness {
     brightnessctl g | grep -Po '[0-9]{1,3}' | head -n 1
-
 }
 
 # Returns a mute icon, a volume-low icon, or a volume-high icon, depending on the volume
 function get_volume_icon {
-    volume=$(get_volume)
-    mute=$(get_mute)
-    if [ "$volume" -eq 0 ] || [ "$mute" == "yes" ]; then
-        volume_icon="󰸈  "
-    elif [ "$volume" -lt 50 ]; then
-        volume_icon="󰕾  "
+    VOLUME=$(get_volume)
+    MUTE=$(get_mute)
+    
+    if [ "$VOLUME" -eq 0 ] || [ "$MUTE" == "yes" ]; then
+        VOLUME_ICON="󰸈  "
+    elif [ "$VOLUME" -lt 50 ]; then
+        VOLUME_ICON="󰕾  "
     else
-        volume_icon="  "
+        VOLUME_ICON="  "
     fi
 }
 
-# Always returns the same icon - I couldn't get the brightness-low icon to work with fontawesome
+# Always returns the same icon - I couldn't get the brightness-low icon to work with FontAwesome
 function get_brightness_icon {
-    brightness_icon="  "
+    BRIGHTNESS_ICON="  "
 }
 
 # Displays a volume notification using dunstify
 function show_volume_notif {
-    volume=$(get_mute)
+    VOLUME=$(get_volume)
     get_volume_icon
-    dunstify -t 1000 -r 2593 -u normal "$volume_icon $volume%" -h int:value:$volume -h string:hlcolor:$bar_color
+    dunstify -t 1000 -r 2593 -u normal "$VOLUME_ICON $VOLUME%" -h int:value:$VOLUME -h string:hlcolor:$BAR_COLOR
 }
 
 # Displays a brightness notification using dunstify
 function show_brightness_notif {
-    massima=$(brightnessctl m)
-    brightness=$(($(get_brightness) * 100 / $massima))
+    MAXIMA=$(brightnessctl m)
+    BRIGHTNESS=$(($(get_brightness) * 100 / $MAXIMA))
     get_brightness_icon
-    dunstify -t 1000 -r 2593 -u normal "$brightness_icon $brightness%" -h int:value:$brightness -h string:hlcolor:$bar_color
+    dunstify -t 1000 -r 2593 -u normal "$BRIGHTNESS_ICON $BRIGHTNESS%" -h int:value:$BRIGHTNESS -h string:hlcolor:$BAR_COLOR
 }
 
 # Main function - Takes user input, "volume_up", "volume_down", "brightness_up", or "brightness_down"
 case $1 in
-volume_up)
-    # Unmutes and increases volume, then displays the notification
-    pactl set-sink-mute @DEFAULT_SINK@ 0
-    volume=$(get_volume)
-    if [ $(("$volume" + "$volume_step")) -gt $max_volume ]; then
-        pactl set-sink-volume @DEFAULT_SINK@ $max_volume%
-    else
-        pactl set-sink-volume @DEFAULT_SINK@ +$volume_step%
-    fi
-    show_volume_notif
-    ;;
+    volume_up)
+        # Unmutes and increases volume, then displays the notification
+        pactl set-sink-mute @DEFAULT_SINK@ 0
+        VOLUME=$(get_volume)
+        if [ $(("$VOLUME" + "$VOLUME_STEP")) -gt $MAX_VOLUME ]; then
+            pactl set-sink-volume @DEFAULT_SINK@ $MAX_VOLUME%
+        else
+            pactl set-sink-volume @DEFAULT_SINK@ +$VOLUME_STEP%
+        fi
+        show_volume_notif
+        ;;
 
-volume_down)
-    # Raises volume and displays the notification
-    pactl set-sink-volume @DEFAULT_SINK@ -$volume_step%
-    show_volume_notif
-    ;;
+    volume_down)
+        # Decreases volume and displays the notification
+        pactl set-sink-volume @DEFAULT_SINK@ -$VOLUME_STEP%
+        show_volume_notif
+        ;;
 
-volume_mute)
-    # Toggles mute and displays the notification
-    pactl set-sink-mute @DEFAULT_SINK@ toggle
-    show_volume_notif
-    ;;
+    volume_mute)
+        # Toggles mute and displays the notification
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        show_volume_notif
+        ;;
 
-brightness_up)
-    # Increases brightness and displays the notification
-    brightnessctl s +$brightness_step
-    show_brightness_notif
-    ;;
+    brightness_up)
+        # Increases brightness and displays the notification
+        brightnessctl s +$BRIGHTNESS_STEP
+        show_brightness_notif
+        ;;
 
-brightness_down)
-    # Decreases brightness and displays the notification
-    brightnessctl s $brightness_step-
-    show_brightness_notif
-    ;;
+    brightness_down)
+        # Decreases brightness and displays the notification
+        brightnessctl s $BRIGHTNESS_STEP-
+        show_brightness_notif
+        ;;
 esac
