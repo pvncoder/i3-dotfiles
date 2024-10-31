@@ -23,7 +23,7 @@ To use this configuration, you will need to install the following libraries and 
 
 Install these using your package manager. For example, on Arch Linux:
 ```
-sudo pacman -S mpv i3-blocks feh scrot flameshot rofi power-profiles-daemon networkmanager polkit-kde-agent blueman kitty picom dunst ttf-firacode-nerd
+sudo pacman -S mpv i3blocks feh scrot flameshot rofi power-profiles-daemon networkmanager polkit-kde-agent blueman kitty picom dunst ttf-firacode-nerd
 ```
 
 ## Themes
