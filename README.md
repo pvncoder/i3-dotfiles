@@ -9,7 +9,6 @@ To use this configuration, you will need to install the following libraries and 
 * **mpv**: media player for multimedia handling
 * **i3-blocks**: for status bar customization
 * **feh**: lightweight image viewer for setting wallpapers
-* **scrot**: simple command-line screenshot tool
 * **flameshot**: screenshot utility for taking and editing screenshots
 * **rofi**: application launcher
 * **power-profiles-daemon**: power management tool
@@ -23,7 +22,14 @@ To use this configuration, you will need to install the following libraries and 
 
 Install these using your package manager. For example, on Arch Linux:
 ```
-sudo pacman -S mpv i3blocks feh scrot flameshot rofi power-profiles-daemon networkmanager polkit-kde-agent blueman kitty picom dunst ttf-firacode-nerd
+sudo pacman -S redshift mpv i3blocks feh flameshot rofi power-profiles-daemon networkmanager polkit-kde-agent blueman kitty picom dunst ttf-firacode-nerd
+```
+
+## Another packages
+
+```
+sudo pacman -S bash-completion gvfs gnome-calculator ttf-font-awesome ttf-dejavu ttf-liberation noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+yay -S ttf-ms-win10-auto
 ```
 
 ## Themes
