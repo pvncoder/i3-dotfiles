@@ -28,7 +28,7 @@ sudo pacman -S redshift mpv i3blocks feh flameshot rofi power-profiles-daemon ne
 ## Another packages
 
 ```
-sudo pacman -S bash-completion gvfs gnome-calculator ttf-font-awesome ttf-dejavu ttf-liberation noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+sudo pacman -S bash-completion gvfs gvfs-mtp gnome-calculator ttf-font-awesome ttf-dejavu ttf-liberation noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
 yay -S ttf-ms-win10-auto
 ```
 
